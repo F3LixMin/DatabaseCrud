@@ -38,7 +38,7 @@ public class EditActivity extends AppCompatActivity {
         rdBtn5 = findViewById(R.id.rdBtn5);
         btnUpdate = findViewById(R.id.btnUpdate);
         btnDelete = findViewById(R.id.btnDelete);
-        btnUpdate = findViewById(R.id.btnUpdate);
+
 
         Intent i = getIntent();
         data = (Songps) i.getSerializableExtra("data");
