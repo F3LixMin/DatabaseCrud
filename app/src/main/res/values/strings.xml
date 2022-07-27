@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Demo DatabaseCRUD</string>
+    <string name="song_id">Song ID</string>
+    <string name="song_title">Song Title</string>
+    <string name="singers">Singers</string>
+    <string name="year">Year</string>
+
 </resources>

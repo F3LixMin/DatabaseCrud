@@ -2,6 +2,7 @@ package sg.edu.rp.c346.id21008740.demodatabasecrud;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,20 +20,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnAdd, btnEdit, btnRetrieve;
-    TextView tvDBContent;
-    EditText etContent;
-    ArrayList<Note> al;
-    ListView lv;
-    ArrayAdapter<Note> aa;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        btnRetrieve.performClick();
-    }
-
+    Button btnInsert, btnShowList;
+    EditText etTitle, etSinger, etYear;
+    RadioButton rdBt1, rdBt2, rdBt3, rdBt4, rdBt5;
+    RadioGroup Star;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,73 +31,52 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //initialize the variables with UI here
-        tvDBContent = findViewById(R.id.tvID);
-        btnAdd = findViewById(R.id.btnAdd);
-        btnEdit = findViewById(R.id.btnEdit);
-        btnRetrieve = findViewById(R.id.btnRetrieve);
-        etContent = findViewById(R.id.etContent);
+        btnInsert = findViewById(R.id.btnInsert);
+        btnShowList = findViewById(R.id.btnShowList);
+        etTitle = findViewById(R.id.etTitle);
+        etSinger = findViewById(R.id.etSingers);
+        etYear = findViewById(R.id.etYear);
+        rdBt1 = findViewById(R.id.rdBtn1);
+        rdBt2 = findViewById(R.id.rdBtn2);
+        rdBt3 = findViewById(R.id.rdBtn3);
+        rdBt4 = findViewById(R.id.rdBtn4);
+        rdBt5 = findViewById(R.id.rdBtn5);
 
 
-        lv = findViewById(R.id.lv);
-        al = new ArrayList<Note>();
-        aa = new ArrayAdapter<Note>(this,
-                android.R.layout.simple_list_item_1, al);
-        lv.setAdapter(aa);
-
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int
-                    position, long identity) {
-                Note data = al.get(position);
-                Intent i = new Intent(MainActivity.this,
-                        EditActivity.class);
-                i.putExtra("data", data);
-                startActivity(i);
+            public void onClick(View v){
+            String title = etTitle.getText().toString();
+            String singer = etSinger.getText().toString();
+            int year = Integer.valueOf(etYear.getText().toString());
+            int stars = 0;
+            if (rdBt1.isChecked()) {
+                {
+                    stars = 1;
+                }
+            }else if(rdBt2.isChecked()){
+                {stars = 2;}
+            }else if(rdBt3.isChecked()){
+                {stars = 3;}
+            }else if(rdBt4.isChecked()){
+                {stars = 4;}
+            }else if(rdBt5.isChecked()){
+                {stars = 5;}
+
+                DBHelper dbHelper = new DBHelper((MainActivity.this));
+                dbHelper.insertSong(title, singer, year, stars);
+
+                Toast.makeText(MainActivity.this, "Insert successfully",
+                        Toast.LENGTH_SHORT).show();
+            }
             }
         });
 
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
+        btnShowList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String data = etContent.getText().toString();
-                DBHelper dbh = new DBHelper(MainActivity.this);
-                long inserted_id = dbh.insertNote(data);
-
-                if (inserted_id != -1){
-                    al.clear();
-                    al.addAll(dbh.getAllNotes());
-                    aa.notifyDataSetChanged();
-                    Toast.makeText(MainActivity.this, "Insert successful",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-        btnRetrieve.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DBHelper dbh = new DBHelper(MainActivity.this);
-                al.clear();
-                // al.addAll(dbh.getAllNotes());
-                String filterText = etContent.getText().toString().trim();
-                if(filterText.length() == 0) {
-                    al.addAll(dbh.getAllNotes());
-                }
-                else {
-                    al.addAll(dbh.getAllNotes(filterText));
-                }
-                aa.notifyDataSetChanged();
-            }
-        });
-
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Note target = al.get(0);
-
-                Intent i = new Intent(MainActivity.this,
-                        EditActivity.class);
-                i.putExtra("data", target);
+                Intent i = new Intent(MainActivity.this, ListActivity.class);
                 startActivity(i);
             }
         });
